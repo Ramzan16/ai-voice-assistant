@@ -1,0 +1,3 @@
+1. Threading and Queue
+2. Tradeoff between understandable pronounciations and streaming super fast.
+3. 

@@ -1,0 +1,9 @@
+kokoro>=0.9.4
+sounddevice>=0.5.2
+torch>=2.8.0
+numpy>=2.3.3
+langgraph
+langchain
+langchain-community
+langchain-google-genai
+realtimestt>=0.3.104
