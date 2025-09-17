@@ -178,6 +178,3 @@ class LLMProcessor:
                     # as we are just streaming the content of the final message.
                     for token in self.llm.stream(last_message.content):
                         yield token.content
-
-if __name__ == '__main__':
-    pass
