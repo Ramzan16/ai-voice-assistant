@@ -8,7 +8,7 @@ def load_all_tools():
     Loads and returns a list of all available tool functions.
     """
     return [
-        search_tool,
+        # search_tool,
         calculator_tool,
         # Add new tools here
     ]

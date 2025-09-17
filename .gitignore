@@ -1,9 +1,5 @@
 .env
-
 .venv
-
 realtimesst.log
-
 __pycache__
-
 assistant\__pycache__
