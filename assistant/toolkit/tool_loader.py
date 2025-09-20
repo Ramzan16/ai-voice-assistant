@@ -1,5 +1,5 @@
-from .tools.calculator import calculator_tool
-from .tools.web_search import search_tool
+from .calculator import calculator_tool
+from .web_search import search_tool
 
 
 # This function acts as a registry for all available tools.

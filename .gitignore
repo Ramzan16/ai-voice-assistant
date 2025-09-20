@@ -4,3 +4,4 @@ realtimesst.log
 __pycache__
 assistant\__pycache__
 test.py
+.vscode
