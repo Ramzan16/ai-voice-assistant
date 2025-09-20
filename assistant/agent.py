@@ -3,7 +3,7 @@ from typing import TypedDict, Annotated, Generator
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, ToolMessage
 from langgraph.graph import StateGraph, END
-from assistant.tools import load_all_tools
+from .toolkit.tool_loader import load_all_tools
 import logging
 from dotenv import load_dotenv
 import os
@@ -178,3 +178,4 @@ class LLMProcessor:
                     # as we are just streaming the content of the final message.
                     for token in self.llm.stream(last_message.content):
                         yield token.content
+
