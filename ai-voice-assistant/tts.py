@@ -3,7 +3,6 @@ import sounddevice as sd
 from kokoro import KPipeline
 from loguru import logger
 from collections.abc import Generator
-import time
 import queue
 import threading
 
