@@ -9,7 +9,6 @@ class SpeechToText:
     def __init__(self, stt_model="base.en", microphone_index=None):
         """
         Initializes the RealtimeSTT recorder.
-        This requires `pip install RealtimeSTT`.
 
         Args:
             stt_model (str): The name of the Whisper model to use.
@@ -18,14 +17,13 @@ class SpeechToText:
         """
         logging.info("Initializing RealtimeSTT...")
         
-        # Note: RealtimeSTT handles voice activity detection automatically,
-        # so manual calibration for ambient noise is no longer necessary.
         self.recorder = AudioToTextRecorder(
             model=stt_model,
-            language="english",
+            language="en",
             device=microphone_index,
             spinner=False, # To keep logs clean
-            wake_words="jarvis"
+            wake_words="jarvis",
+            wakeword_backend="openwakeword"
         )
         logging.info("RealtimeSTT initialization complete.")
 
@@ -46,3 +44,12 @@ class SpeechToText:
         except Exception as e:
             logging.error(f"An error occurred during transcription: {e}")
             return ""
+        
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    stt = SpeechToText()
+    while True:
+        transcription = stt.listen()
+        if transcription:
+            print(f"Transcribed Text: {transcription}")

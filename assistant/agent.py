@@ -3,7 +3,7 @@ from typing import TypedDict, Annotated, Generator
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, ToolMessage
 from langgraph.graph import StateGraph, END
-from assistant.toolkit.tool_loader import load_all_tools 
+from .toolkit.tool_loader import load_all_tools 
 from loguru import logger
 from dotenv import load_dotenv
 import os
