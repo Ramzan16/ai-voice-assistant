@@ -3,6 +3,12 @@
 realtimesst.log
 __pycache__
 assistant\__pycache__
+.vscode
+
+
+#test files
+ai-voice-assistant\toolkit
 assistant\toolkit\__pycache__
 test.py
-.vscode
+ai-voice-assistant\stt.py
+ai-voice-assistant\tts.py
