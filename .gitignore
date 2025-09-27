@@ -2,13 +2,15 @@
 .venv
 realtimesst.log
 __pycache__
-assistant\__pycache__
+ai-voice-assistant\__pycache__
 .vscode
 
 
 #test files
 ai-voice-assistant\toolkit
-assistant\toolkit\__pycache__
+ai-voice-assistant\toolkit\__pycache__
 test.py
-ai-voice-assistant\stt.py
+ai-voice-assistant\agent.py
 ai-voice-assistant\tts.py
+ai-voice-assistant\stt.py
+main.py
