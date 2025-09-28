@@ -65,8 +65,12 @@ class Settings(BaseSettings):
     @field_validator("tts_device")
     def validate_device(cls, v):
         if v == "auto":
-            import torch
-            return "cuda" if torch.cuda.is_available() else "cpu"
+            try:
+                import torch
+                return "cuda" if torch.cuda.is_available() else "cpu"
+            except Exception:
+                # If torch isn't installed or fails to load, default to CPU.
+                return "cpu"
         return v
 
 # Singleton instance

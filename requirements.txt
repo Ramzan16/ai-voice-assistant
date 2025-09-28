@@ -8,3 +8,5 @@ langchain-community
 langchain-google-genai
 realtimestt>=0.3.104
 tavily-python
+torch
+loguru>=0.7.2
