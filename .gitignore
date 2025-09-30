@@ -4,14 +4,8 @@ realtimesst.log
 __pycache__
 ai-voice-assistant\__pycache__
 .vscode
-
+assistant\logs
 
 #test files
-ai-voice-assistant\toolkit
-ai-voice-assistant\toolkit\__pycache__
 test.py
-ai-voice-assistant\agent.py
-ai-voice-assistant\tts.py
-ai-voice-assistant\stt.py
 main.py
-1.py
