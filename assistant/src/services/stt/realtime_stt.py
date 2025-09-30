@@ -6,7 +6,7 @@ from RealtimeSTT import AudioToTextRecorder
 
 from src.config import Settings
 from .base import SpeechToText
-# from src.core.exceptions import STTError
+from src.core.exceptions import STTError
 
 
 class RealtimeSTTService(SpeechToText):
@@ -38,7 +38,7 @@ class RealtimeSTTService(SpeechToText):
             logger.success("RealtimeSTT initialized successfully.")
         except Exception as e:
             logger.opt(exception=e).critical("Failed to initialize RealtimeSTT recorder.")
-            # raise STTError("Could not initialize the RealtimeSTT recorder.") from e
+            raise STTError("Could not initialize the RealtimeSTT recorder.") from e
             raise
 
     async def transcribe(self) -> AsyncIterator[str]:

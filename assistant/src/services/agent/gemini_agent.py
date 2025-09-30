@@ -10,7 +10,7 @@ from assistant.src.config import Settings
 from assistant.src.core.interfaces import Agent
 from assistant.src.core.types import ChatMessage, Role, ToolCall
 from assistant.src.services.tools.registry import ToolRegistry
-# from assistant.src.core.exceptions import AgentError
+from assistant.src.core.exceptions import AgentError
 
 
 class AgentState(TypedDict):
@@ -53,7 +53,7 @@ class GeminiAgent(Agent):
             self.llm_with_tools = self.llm.bind_tools(self.tools)
         except Exception as e:
             logger.opt(exception=e).critical("Failed to initialize ChatGoogleGenerativeAI.")
-            # raise AgentError("Could not initialize the Gemini LLM.") from e
+            raise AgentError("Could not initialize the Gemini LLM.") from e
 
         self.graph = self._build_graph()
         logger.success(f"GeminiAgent initialized with {len(self.tools)} tools.")
