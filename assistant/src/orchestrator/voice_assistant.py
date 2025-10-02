@@ -3,7 +3,7 @@ from typing import List
 
 from loguru import logger
 
-from assistant.src.config import Settings
+from assistant.src.config.settings import Settings
 from assistant.src.core.exceptions import VoiceAssistantError
 from assistant.src.core.interfaces import Agent, SpeechToText, TextToSpeech
 from assistant.src.core.types import ChatMessage, Role

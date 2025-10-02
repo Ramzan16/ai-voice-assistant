@@ -5,7 +5,7 @@ __pycache__
 ai-voice-assistant\__pycache__
 .vscode
 assistant\logs
+logs
 
 #test files
 test.py
-main.py

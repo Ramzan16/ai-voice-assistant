@@ -5,7 +5,8 @@ from typing import Dict, List, Any
 from loguru import logger
 from langchain_core.messages import ToolMessage
 
-from assistant.src.config import Settings
+# --- FIX: Use a relative import to reliably find modules within the same package ---
+from ...config import Settings
 from .base import Tool
 
 
@@ -36,7 +37,9 @@ class ToolRegistry:
         for filename in os.listdir(tools_dir):
             if filename.endswith(".py") and not filename.startswith(("_", "base", "registry")):
                 module_name = filename[:-3]
-                module_path = f"src.services.tools.{module_name}"
+                
+                # --- FIX: Use __package__ for robust dynamic imports ---
+                module_path = f"{__package__}.{module_name}"
                 
                 try:
                     module = importlib.import_module(module_path)
@@ -65,14 +68,6 @@ class ToolRegistry:
     async def call_tool(self, tool_name: str, tool_args: Dict[str, Any], tool_call_id: str) -> ToolMessage:
         """
         Finds and executes a tool by name with the given arguments.
-
-        Args:
-            tool_name: The name of the tool to execute.
-            tool_args: A dictionary of arguments for the tool.
-            tool_call_id: The unique ID for this specific tool call.
-
-        Returns:
-            A LangChain ToolMessage containing the result or an error.
         """
         tool_to_call = self.get_tool(tool_name)
         if not tool_to_call:
@@ -81,7 +76,6 @@ class ToolRegistry:
             return ToolMessage(content=error_msg, tool_call_id=tool_call_id)
 
         try:
-            # The schema is validated by Pydantic within the LangChain tool wrapper
             output = await tool_to_call._execute(**tool_args)
             return ToolMessage(content=str(output), tool_call_id=tool_call_id)
         except Exception as e:
