@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import AsyncIterator, List
+import numpy as np
 
 from .types import ChatMessage
 
@@ -23,7 +24,7 @@ class TextToSpeech(ABC):
     """Abstract base class for text-to-speech services."""
 
     @abstractmethod
-    async def synthesize(self, text: str) -> None:
+    async def synthesize(self, text: str) -> AsyncIterator[np.ndarray]:
         """
         Synthesizes text into speech and plays it.
 

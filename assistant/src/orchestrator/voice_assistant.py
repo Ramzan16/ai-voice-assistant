@@ -11,6 +11,7 @@ from assistant.src.services.agent import GeminiAgent
 from assistant.src.services.stt import RealtimeSTTService
 from assistant.src.services.tools import ToolRegistry
 from assistant.src.services.tts import KokoroTTS
+import sounddevice as sd
 
 
 class VoiceAssistant:
@@ -58,6 +59,14 @@ class VoiceAssistant:
         and synthesizes the response as speech.
         """
         logger.info("Starting the main assistant loop...")
+        
+        stream = sd.OutputStream(
+            samplerate=self.settings.sample_rate,
+            channels=1,
+            dtype='float32'
+        )
+        stream.start()
+        
         while True:
             try:
                 final_transcription = ""
@@ -89,7 +98,11 @@ class VoiceAssistant:
                 logger.info(f"Assistant response: '{full_response_text}'")
 
                 # --- SPEAK ---
-                await self.tts_service.synthesize(assistant_message.content)
+                logger.info("Streaming TTS audio...")
+                audio_generator = self.tts_service.synthesize(assistant_message.content)
+                async for audio_chunk in audio_generator:
+                    stream.write(audio_chunk) # Directly write the np.ndarray chunk
+                logger.info("Finished streaming TTS audio.")
 
                 # --- UPDATE HISTORY ---
                 self._update_history(user_message, assistant_message)
