@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from tavily import TavilyClient
 from loguru import logger
 
-from src.config import Settings
+from ...config import Settings
 from .base import Tool
 
 

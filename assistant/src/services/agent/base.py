@@ -6,6 +6,6 @@ interfaces to provide a clear and consistent entry point for all agent
 implementations.
 """
 
-from src.core.interfaces import Agent
+from ...core.interfaces import Agent
 
 __all__ = ["Agent"]

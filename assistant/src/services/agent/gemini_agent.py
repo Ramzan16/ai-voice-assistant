@@ -1,16 +1,17 @@
 import operator
 from typing import TypedDict, Annotated, AsyncIterator, List
 
-from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage
+from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import StateGraph, END
 from loguru import logger
 
-from assistant.src.config import Settings
-from assistant.src.core.interfaces import Agent
-from assistant.src.core.types import ChatMessage, Role, ToolCall
-from assistant.src.services.tools.registry import ToolRegistry
-from assistant.src.core.exceptions import AgentError
+from ...config import Settings
+from ...core.interfaces import Agent
+from ...core.types import ChatMessage, Role, ToolCall
+from ..tools.registry import ToolRegistry
+from ...core.exceptions import AgentError
+from .base import Agent
 
 
 class AgentState(TypedDict):
@@ -47,7 +48,6 @@ class GeminiAgent(Agent):
                 model=self.settings.llm_model,
                 google_api_key=self.settings.gemini_api_key,
                 temperature=self.settings.llm_temperature,
-                convert_system_message_to_human=True, # Recommended for Gemini
             )
             # Bind the tools to the LLM so it knows their signatures.
             self.llm_with_tools = self.llm.bind_tools(self.tools)
@@ -111,31 +111,41 @@ class GeminiAgent(Agent):
             if msg.role == Role.USER:
                 lc_history.append(HumanMessage(content=msg.content))
             elif msg.role == Role.ASSISTANT:
-                # Reconstruct AIMessage with potential tool calls
-                ai_msg = AIMessage(content=msg.content or "")
+                # Convert tool calls to the proper LangChain format
+                tool_calls = []
                 if msg.tool_calls:
-                    ai_msg.tool_calls = [
-                        {
+                    for tc in msg.tool_calls:
+                        tool_calls.append({
                             "id": tc.id,
                             "name": tc.function.name,
-                            "args": tc.function.arguments,
-                        }
-                        for tc in msg.tool_calls
-                    ]
-                lc_history.append(ai_msg)
+                            "args": tc.function.arguments,  # Note: "args" is correct for LangChain
+                        })
+                
+                lc_history.append(AIMessage(
+                    content=msg.content or "",
+                    tool_calls=tool_calls if tool_calls else None
+                ))
+            elif msg.role == Role.TOOL:
+                # Handle tool result messages
+                lc_history.append(ToolMessage(
+                    content=msg.content or "",
+                    tool_call_id=getattr(msg, 'tool_call_id', '')  # You'll need to store this
+                ))
         return lc_history
     
+
     async def get_response(
         self,
         history: List[ChatMessage],
         last_user_message: str,
     ) -> AsyncIterator[ChatMessage]:
         """
-        Processes user input and generates a stream of response messages,
-        handling tool calls transparently.
+        Processes user input and generates a stream of response messages.
         """
         system_prompt = (
-            "You are a helpful and concise voice assistant. "
+                        "You are a helpful and concise voice assistant. When asked who you are, "
+            "you should identify yourself as the user's helpful voice assistant who can help with various tasks. "
+            "Do not mention that you are a language model or Gemini. "
             "Your responses will be spoken, so do not use markdown formatting "
             "like _italics_, **bold**, or `code blocks`."
         )
@@ -146,20 +156,19 @@ class GeminiAgent(Agent):
             HumanMessage(content=last_user_message),
         ]
         
-        final_state: AgentState | None = None
+        streamed_content = ""
         
         async for chunk in self.graph.astream({"messages": initial_messages}):
-            if END in chunk:
-                final_state = chunk[END]
-                break
+            # The chunk contains the full state of the graph at that point in time.
+            # We look for the 'llm' node's output, which contains the AIMessage.
+            if "llm" in chunk:
+                # Get the most recent AI message from the list of messages.
+                ai_message = chunk["llm"]["messages"][-1]
+                full_content = ai_message.content
 
-        if not final_state or not final_state.get("messages"):
-             logger.error("Agent graph finished with no final state or messages.")
-             yield ChatMessage(role=Role.ASSISTANT, content="I'm sorry, but something went wrong.")
-             return
-
-        final_message = final_state["messages"][-1]
-
-        # Stream the final text response token by token
-        async for token in self.llm.astream(final_state["messages"]):
-             yield ChatMessage(role=Role.ASSISTANT, content=token.content)
+                # Check if there is new content to stream.
+                if full_content and full_content != streamed_content:
+                    # Yield only the new part of the content.
+                    new_content = full_content[len(streamed_content):]
+                    yield ChatMessage(role=Role.ASSISTANT, content=new_content)
+                    streamed_content = full_content

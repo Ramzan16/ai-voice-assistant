@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 from langchain_core.tools import BaseTool
+from langchain_core.tools import tool
 
 
 class Tool(ABC):
@@ -41,12 +42,11 @@ class Tool(ABC):
 
     def to_langchain_tool(self) -> BaseTool:
         """Converts this tool instance into a LangChain-compatible tool."""
-        from langchain_core.tools import tool
         
         # This is a bit of a clever trick to dynamically create a LangChain tool
         # from our interface. It wraps the `_execute` method with the necessary
         # decorators and metadata.
-        @tool(name=self.name, description=self.description, args_schema=self.args_schema)
+        @tool(self.name, description=self.description, args_schema=self.args_schema)
         async def dynamic_tool(**kwargs: Any) -> str:
             return await self._execute(**kwargs)
         

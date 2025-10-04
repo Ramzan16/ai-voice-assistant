@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     spotify_api_key: Optional[str] = Field(None, min_length=1)
 
     # Model Configuration
-    llm_model: str = Field("gemini-2.0-flash-exp", description="LLM model to use")
+    llm_model: str = Field("gemini-2.5-flash", description="LLM model to use")
     llm_temperature: float = Field(0.0, ge=0.0, le=2.0)
     stt_model: STTModel = Field(STTModel.TINY)
     tts_voice: TTSVoice = Field(TTSVoice.BELLA)
