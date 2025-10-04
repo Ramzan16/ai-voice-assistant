@@ -4,9 +4,9 @@ from typing import AsyncIterator
 from loguru import logger
 from RealtimeSTT import AudioToTextRecorder
 
-from src.config import Settings
+from ...config import Settings
 from .base import SpeechToText
-from src.core.exceptions import STTError
+from ...core.exceptions import STTError
 
 
 class RealtimeSTTService(SpeechToText):
