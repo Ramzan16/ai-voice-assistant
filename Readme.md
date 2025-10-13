@@ -61,7 +61,7 @@ sudo apt-get update && sudo apt-get install libportaudio2 portaudio19-dev
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/ramzan16-ai-voice-assistant.git
+git clone https://github.com/Ramzan16/ai-voice-assistant.git
 cd ramzan16-ai-voice-assistant
 ```
 
