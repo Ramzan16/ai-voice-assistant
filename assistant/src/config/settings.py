@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     
     # Application Configuration
     log_level: LogLevel = Field(LogLevel.INFO)
-    wake_words: List[str] = Field(["jarvis", "assistant"])
+    wake_words: List[str] = Field(["jarvis", "assistant", "hey friday"])
     max_recording_duration: float = Field(30.0, gt=0)
     
     # Tool Configuration
