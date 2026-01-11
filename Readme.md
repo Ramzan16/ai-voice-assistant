@@ -118,7 +118,7 @@ The assistant will initialize and begin listening for the wake word.
 
 ### 2. New Features
 
-- **Add New Tools:** Leverage the extensible tool registry to add integrations (e.g., Notion, Spotify) already anticipated in the settings.
+- **Add New Tools:** Leverage the extensible tool registry to add integrations (e.g., Notion, Spotify).
 - **Stateful System Commands:** Implement assistant-control tools such as `change your voice`, `speak faster`, and `enter silent mode`.
 
 ---
